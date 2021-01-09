@@ -10,6 +10,7 @@ import com.nectcracker.studyproject.repos.UserRepository;
 import com.nectcracker.studyproject.repos.UserWishesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,11 +170,12 @@ public class ChatService {
     public void closeAfterMoneyCollected(Long wishId) {
         UserWishes userWishes = userWishesRepository.getOne(wishId);
         Chat chat = chatRepository.findByWishForChat(userWishes);
-        newsService.createNewMoneyCollected(chat, chat.getOwner());
+        chat.setCollected(true);
+        Chat chatAfterSave = chatRepository.save(chat);
+        newsService.createNewMoneyCollected(chatAfterSave, chatAfterSave.getOwner());
         userWishes.setChatForWish(null);
         userWishes.setClosed(true);
         userWishesRepository.save(userWishes);
-        chatRepository.deleteById(wishId);
     }
 
     public Boolean isMoneyCollected(Long wishId) {

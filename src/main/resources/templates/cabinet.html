@@ -189,19 +189,21 @@
     <div th:if="${wishes.isEmpty()}">Пока у вас нет желаний</div>
 
     <div th:each="w : ${wishes}">
-        <div th:if="!${w.friendCreateWish}" class="card-deck">
-            <div class="card border-info mb-3" style="max-width: 18rem;">
-                <div th::if="${w.getImgURL()}">
-                    <img class="card-img-top" th:attr="src=${w.getImgURL()},title=${w.getImgURL()},alt=${w.getImgURL()}" >
-                </div>
-                <div class="card-body text-info">
-                    <h5 class="card-title">
-                        <p>Желание: [[${w.wishName}]]</p>
-                        <p th:if="${w.eventForWish}">Событие: [[${w.eventForWish.title}]]</p>
-                        <form th:action="@{/deleteWish/{id}(id=${w.getId()})}" class="form-inline m-3" method="post">
-                            <button type="submit" class="btn btn-primary mt-3">Удалить</button>
-                        </form>
-                    </h5>
+        <div th:if="!${w.isDeleted()}">
+            <div th:if="!${w.friendCreateWish}" class="card-deck">
+                <div class="card border-info mb-3" style="max-width: 18rem;">
+                    <div th::if="${w.getImgURL()}">
+                        <img class="card-img-top" th:attr="src=${w.getImgURL()},title=${w.getImgURL()},alt=${w.getImgURL()}" >
+                    </div>
+                    <div class="card-body text-info">
+                        <h5 class="card-title">
+                            <p>Желание: [[${w.wishName}]]</p>
+                            <p th:if="${w.eventForWish}">Событие: [[${w.eventForWish.title}]]</p>
+                            <form th:action="@{/deleteWish/{id}(id=${w.getId()})}" class="form-inline m-3" method="post">
+                                <button type="submit" class="btn btn-primary mt-3">Удалить</button>
+                            </form>
+                        </h5>
+                    </div>
                 </div>
             </div>
         </div>

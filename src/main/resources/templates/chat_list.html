@@ -19,15 +19,17 @@
     <div class="m-3">
         <div th:if="${chats.isEmpty()}">Пока чатов нет</div>
         <div th:each="c : ${chats}">
-            <div class="card-deck">
-                <div class="card border-info mb-3" style="max-width: 18rem;">
-                    <div class="card-body text-info">
-                        <a href="chat.html" th:href="@{/chat(wishId=${c.getWishId()})}"><h5 class="card-title"><span th:text="${c.getWishName()}"></span></h5></a>
-                        <div class="card-text">
-                            <a class="people-icon" href="#"><span th:text="${c.getNumberOfParticipants()}"></span></a>
-                            <p></p>
-                            <a class="dollar-icon" href="#"><span>[[${c.sumCurrentPrice()}]] руб.</span>
-                                / <span>[[${c.presentPrice}]] руб.</span></a>
+            <div th:if="${!c.isCollected()}">
+                <div class="card-deck">
+                    <div class="card border-info mb-3" style="max-width: 18rem;">
+                        <div class="card-body text-info">
+                            <a href="chat.html" th:href="@{/chat(wishId=${c.getWishId()})}"><h5 class="card-title"><span th:text="${c.getWishName()}"></span></h5></a>
+                            <div class="card-text">
+                                <a class="people-icon" href="#"><span th:text="${c.getNumberOfParticipants()}"></span></a>
+                                <p></p>
+                                <a class="dollar-icon" href="#"><span>[[${c.sumCurrentPrice()}]] руб.</span>
+                                    / <span>[[${c.presentPrice}]] руб.</span></a>
+                            </div>
                         </div>
                     </div>
                 </div>

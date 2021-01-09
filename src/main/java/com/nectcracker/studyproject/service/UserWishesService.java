@@ -80,6 +80,7 @@ public class UserWishesService implements UserRepositoryCustom {
 
     public void deleteUserWish(Long id) {
         UserWishes wish = getById(id);
-        userWishesRepository.delete(wish);
+        wish.setDeleted(true);
+        userWishesRepository.save(wish);
     }
 }

@@ -29,6 +29,8 @@ public class Chat {
 
     private Double currentPrice;
 
+    private boolean collected;
+
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(name = "user_id")
     private User owner;
@@ -47,6 +49,7 @@ public class Chat {
         this.deadline = deadline;
         this.presentPrice = presentPrice;
         this.currentPrice = 0.0;
+        this.collected = false;
     }
 
 
