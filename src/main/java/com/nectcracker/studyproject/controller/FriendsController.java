@@ -63,7 +63,6 @@ public class FriendsController {
         Map<String, Set> friendsMapForForm = cache.get(user);
 
         model.addAttribute("registeredFriends", friendsMapForForm.get("registered"));
-        model.addAttribute("notRegisteredFriends", friendsMapForForm.get("notRegistered"));
         return "friends";
     }
 

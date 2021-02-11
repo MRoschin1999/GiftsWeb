@@ -160,7 +160,10 @@ public class ChatService {
         if (!deadline.equals("")) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             Chat chat = getById(id);
-            chat.setDeadline(formatter.parse(deadline));
+            Date deadlineDate = formatter.parse(deadline);
+            if(deadlineDate.before(new Date()))
+                return false;
+            chat.setDeadline(deadlineDate);
             chatRepository.save(chat);
             return true;
         }

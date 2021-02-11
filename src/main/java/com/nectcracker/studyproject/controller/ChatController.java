@@ -92,7 +92,6 @@ public class ChatController {
         if (!chatService.createNewChat(id, description, deadline, sum)) {
             modelAndView = new ModelAndView("redirect:/new_chat");
             modelAndView.addObject("errorInfo", "Please fill again");
-
         } else {
             modelAndView = new ModelAndView("redirect:/chat");
         }
@@ -129,9 +128,14 @@ public class ChatController {
     }
 
     @PostMapping("/updateDeadline/{id}")
-    public String updateDeadline(@PathVariable Long id, @RequestParam String deadline) throws ParseException {
-        chatService.updateDeadline(deadline, id);
-        return "redirect:/chat_list";
+    public ModelAndView updateDeadline(@PathVariable Long id, @RequestParam String deadline) throws ParseException {
+        if(chatService.updateDeadline(deadline, id))
+            return new ModelAndView("redirect:/chat_list");
+        else {
+            ModelAndView modelAndView = new ModelAndView("redirect:/chat");
+            modelAndView.addObject("wishId", id);
+            return modelAndView;
+        }
     }
 
 

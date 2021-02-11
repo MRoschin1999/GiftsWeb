@@ -19,12 +19,6 @@
     <div th:each="friend : ${registeredFriends}">
         <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}"><img th:src="${friend.getInfo().photo50}"> <span hre th:text="${friend.getInfo().getFirstName()}"> </span> <span th:text="${friend.getInfo().getLastName()}"></span></a>
     </div>
-    <h2>Ваши друзья, которых ещё нет в системе</h2>
-    <div th:if="${notRegisteredFriends.isEmpty()}">Кажется у вас нет друзей</div>
-    <div th:each="notRegisteredFriend : ${notRegisteredFriends}">
-        <p><img th:src="${notRegisteredFriend.photo_50}"> <span th:text="${notRegisteredFriend.first_name}"></span>  <span th:text="${notRegisteredFriend.last_name}"></span>
-        </p>
-    </div>
 </div>
 <div th:insert="fragments/settings :: settings"></div>
 </body>
