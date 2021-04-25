@@ -154,6 +154,9 @@
     <a href="/news"><span>Количество новостей: [[${newsNumber}]]</span></a>
 
     <div class="font-italic m-3">Мои интересы</div>
+    <form th:action="@{/setInterest}" method="post" class="m-3">
+        <button type="submit" class="btn btn-primary mx-3">Определить интерес по моей странице VK</button>
+    </form>
     <div class="card-deck m-3">
         <div th:each="i : ${interests}">
             <div class="card bg-light mb-3" style="max-width: 18rem;">

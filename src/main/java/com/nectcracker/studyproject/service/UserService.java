@@ -2,7 +2,6 @@ package com.nectcracker.studyproject.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.VkontakteApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
@@ -16,7 +15,6 @@ import com.nectcracker.studyproject.json.friendsFromVK.Nickname;
 import com.nectcracker.studyproject.repos.UserInfoRepository;
 import com.nectcracker.studyproject.repos.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,24 +42,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
     private final ObjectMapper objectMapper;
-
-    @Value("${spring.security.oauth2.vk.client.clientId}")
-    private String vkClientId;
-
-    @Value("${spring.security.oauth2.vk.client.clientSecret}")
-    private String vkClientSecret;
-
-    @Value("${spring.security.oauth2.vk.client.scope}")
-    private String vkScope;
-
-    @Value("${spring.security.oauth2.vk.callback}")
-    private String vkCallback;
-
-    @Value("${spring.security.oauth2.vk.method}")
-    private String vkMethod;
-
-    //Because @Value initialize after OAuth20Service
-    private OAuth20Service vkScribejavaService = null;
+    private final OAuth20Service vkScribejavaService;
 
     private String accessToken;
 
@@ -70,12 +51,13 @@ public class UserService implements UserDetailsService {
     private Random random = new Random();
 
 
-    public UserService(UserRepository userRepository, MailSender mailSender, UserInfoRepository userInfoRepository, PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
+    public UserService(UserRepository userRepository, MailSender mailSender, UserInfoRepository userInfoRepository, PasswordEncoder passwordEncoder, ObjectMapper objectMapper, OAuth20Service vkScribejavaService) {
         this.userRepository = userRepository;
         this.mailSender = mailSender;
         this.userInfoRepository = userInfoRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
+        this.vkScribejavaService = vkScribejavaService;
     }
 
     @Override
@@ -169,18 +151,12 @@ public class UserService implements UserDetailsService {
         Set<User> friendsSetRegistered = new HashSet<>();
         Set<Nickname> friendsNicknamesSetNotRegistered = new HashSet<>();
         if(user.getVkId() != null) {
-        vkScribejavaService = new ServiceBuilder(vkClientId)
-                .apiSecret(vkClientSecret)
-                .defaultScope(vkScope)
-                .callback(vkCallback)
-                .build(VkontakteApi.instance());
-
             final OAuthRequest friendsRequest = new OAuthRequest(Verb.GET, "https://api.vk.com/method/friends.get?user_id=" + user.getVkId() + "&fields=nickname,photo_50&v=" + VkontakteApi.VERSION);
             vkScribejavaService.signRequest(accessToken, friendsRequest);
             final Response friendsResponse = vkScribejavaService.execute(friendsRequest);
 
-            String UserFriendsFromVk = friendsResponse.getBody();
-            Set<Nickname> friendsNicknames = objectMapper.readValue(UserFriendsFromVk, FriendsFromVk.class).getResponse().getItems();
+            String userFriendsFromVk = friendsResponse.getBody();
+            Set<Nickname> friendsNicknames = objectMapper.readValue(userFriendsFromVk, FriendsFromVk.class).getResponse().getItems();
 
 
             User friend;

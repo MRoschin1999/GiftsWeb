@@ -3,7 +3,6 @@ package com.nectcracker.studyproject.config;
 import com.nectcracker.studyproject.service.CustomUserInfoTokenServices;
 import com.nectcracker.studyproject.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;

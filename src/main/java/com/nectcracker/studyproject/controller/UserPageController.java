@@ -13,10 +13,12 @@ import com.nectcracker.studyproject.service.UserService;
 import com.nectcracker.studyproject.service.NewsService;
 import com.nectcracker.studyproject.service.UserWishesService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,6 +37,9 @@ public class UserPageController {
     private final NewsService newsService;
     private final EventsService eventsService;
     private final UserService userService;
+
+    @Autowired
+
 
     private CacheLoader<User, Map> loader = new CacheLoader<User, Map>() {
         @Override
@@ -93,5 +98,10 @@ public class UserPageController {
         model.put("eventsData", currentUserData);
         model.put("friendsEventsData", friendsEventsData);
         return "cabinet";
+    }
+
+    @PostMapping("/setInterest")
+    public void setInterestByVk(){
+
     }
 }
