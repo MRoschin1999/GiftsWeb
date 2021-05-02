@@ -38,7 +38,6 @@ public class UserPageController {
     private final EventsService eventsService;
     private final UserService userService;
 
-    @Autowired
 
 
     private CacheLoader<User, Map> loader = new CacheLoader<User, Map>() {
@@ -102,6 +101,6 @@ public class UserPageController {
 
     @PostMapping("/setInterest")
     public void setInterestByVk(){
-
+    //TODO send call to microservice
     }
 }

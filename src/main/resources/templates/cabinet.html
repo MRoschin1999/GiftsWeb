@@ -97,6 +97,9 @@
                         }
                     }
                     calendar.unselect()
+                    setTimeout(function(){
+                        location.reload(true);
+                    }, 50);
                 },
                 eventRender: function(info) {
                     let result = "";
