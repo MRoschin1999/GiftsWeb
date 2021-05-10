@@ -7,17 +7,16 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-collapse collapse" th:if="${#httpServletRequest.getSession().getAttribute('photo')}!=null">
-
-                <img th:src="${#httpServletRequest.getSession().getAttribute('photo')}" alt="avatar"/>
+        <div class="navbar-collapse collapse" >
+                <div th:if="${#httpServletRequest.getSession().getAttribute('photo')}!=null">
+                    <img th:src="${#httpServletRequest.getSession().getAttribute('photo')}" alt="avatar"/>
+                </div>
                 <span class="navbar-text mx-3">
                             [[${#httpServletRequest.getSession().getAttribute("name")}]]
                 </span>
-                <form th:action="@{/logout}" method="post">
-                    <button class="btn btn-primary" type="submit">Выйти</button>
-                </form>
-
-
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-primary" type="submit">Выйти</button>
+            </form>
         </div>
     </nav>
 </div>

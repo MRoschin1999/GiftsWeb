@@ -19,7 +19,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
@@ -93,6 +96,9 @@ public class UserPageController {
             }
         }
 
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        request.getSession().setAttribute("name", currentUserInfo.getFirstName() + " " + currentUserInfo.getLastName());
 
         model.put("eventsData", currentUserData);
         model.put("friendsEventsData", friendsEventsData);
