@@ -46,7 +46,7 @@ public class UserPageController {
     private CacheLoader<User, Map> loader = new CacheLoader<User, Map>() {
         @Override
         public Map load(User user) throws Exception {
-            return userService.takeFriendFromVk(user);
+            return userService.getFriends(user);
         }
     };
     private LoadingCache<User, Map> cache = CacheBuilder.newBuilder().refreshAfterWrite(30, TimeUnit.MINUTES).build(loader);;

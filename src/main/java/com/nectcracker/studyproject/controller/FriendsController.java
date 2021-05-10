@@ -39,11 +39,11 @@ public class FriendsController {
     private CacheLoader<User, Map> loader = new CacheLoader<User, Map>() {
         @Override
         public Map load(User user) throws Exception {
-            return userService.takeFriendFromVk(user);
+            return userService.getFriends(user);
         }
     };
     private LoadingCache<User, Map> cache = CacheBuilder.newBuilder().refreshAfterWrite(30, TimeUnit.MINUTES).build(loader);
-    ;
+
 
     public FriendsController(UserService userService, InterestsService interestsService,
                              UserWishesService userWishesService, UserInfoRepository userInfoRepository, EventsService eventsService, ObjectMapper objectMapper) {
@@ -57,6 +57,17 @@ public class FriendsController {
 
     @GetMapping("/friends")
     public String friends(Model model) throws ExecutionException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
+
+        Map<String, Set> friendsMapForForm = cache.get(user);
+
+        model.addAttribute("registeredFriends", friendsMapForForm.get("registered"));
+        return "friends";
+    }
+
+    @GetMapping("/find_friends")
+    public String findFriends(Model model) throws ExecutionException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) userService.loadUserByUsername(auth.getName());
 

@@ -180,6 +180,13 @@ public class UserService implements UserDetailsService {
         return friendMapForForm;
     }
 
-
+    public Map<String, Set> getFriends(User user) throws InterruptedException, ExecutionException, IOException {
+        HashMap<String, Set> resultFriendsMap = new HashMap<>();
+        if(user.getVkId() != null){
+            takeFriendFromVk(user);
+        }
+        resultFriendsMap.put("registered", userRepository.findAllByFriends(user));
+        return resultFriendsMap;
+    }
 
 }
