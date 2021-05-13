@@ -10,14 +10,49 @@
 </head>
 <body>
 <div th:insert="fragments/navbar :: header"></div>
-<div th:insert="fragments/listgroup :: group" style="display : inline-block; vertical-align: top;"></div>
-<div style="display : inline-block; vertical-align: top;">
+<div th:insert="fragments/listgroup :: group" style="display : inline-block; vertical-align: top;">
+</div><div style="display : inline-block; vertical-align: top;">
   <h1>Список друзей</h1>
   <div th:insert="fragments/settings :: settings"></div>
-  <h2>Ваши друзья, которые уже в системе</h2>
-  <div th:if="${registeredFriends.isEmpty()}">Пока у вас нет друзей нет</div>
-  <div th:each="friend : ${registeredFriends}">
-    <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}"><img th:src="${friend.getInfo().photo50}"> <span hre th:text="${friend.getInfo().getFirstName()}"> </span> <span th:text="${friend.getInfo().getLastName()}"></span></a>
+  <h3 class="m-3">Заполните поля кпо которым хотите осуществить поиск</h3>
+  <form th:object = "${friendInfo}" th:action="@{/find_friends}" method="post" id="search_friend">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label> Имя: </label>
+        <div class="col-sm-6">
+          <input class="form-control" type="text" name="first_name"/>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label> Фамилия: </label>
+        <div class="col-sm-6">
+          <input class="form-control" type="text" name="last_name"/>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 col-form-label"> Email:</label>
+      <div class="col-sm-6">
+        <input class="form-control" type="text" name="email"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-1 col-form-label"> Логин: </label>
+      <div class="col-sm-6">
+        <input class="form-control" type="text" name="login"/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary m-3">Искать</button>
+  </form>
+  <div th:if="${founded}">
+    <h1>найденные люди</h1>
+    <div th:each="friend : ${foundedUsers}">
+      <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}">
+        <img th:if="${friend.getInfo().hasPhoto()}" th:src="${friend.getInfo().photo50}">
+        <span hre th:text="${friend.getInfo().getFirstName()}"> </span>
+        <span th:text="${friend.getInfo().getLastName()}"></span></a>
+    </div>
   </div>
 </div>
 <div th:insert="fragments/settings :: settings"></div>
