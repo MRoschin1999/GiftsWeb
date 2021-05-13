@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -187,6 +188,50 @@ public class UserService implements UserDetailsService {
         }
         resultFriendsMap.put("registered", userRepository.findAllByFriends(user));
         return resultFriendsMap;
+    }
+
+    public Set<User> findFriend(UserRegistrationRequest userRegistrationRequest) {
+        boolean founded = false;
+        boolean foundByLastName = false;
+        userRegistrationRequest.setEmail(userRegistrationRequest.getEmail().replaceAll(" ", ""));
+        userRegistrationRequest.setLogin(userRegistrationRequest.getLogin().replaceAll(" ", ""));
+        userRegistrationRequest.setFirst_name(userRegistrationRequest.getFirst_name().replaceAll(" ", ""));
+        userRegistrationRequest.setLast_name(userRegistrationRequest.getLast_name().replaceAll(" ", ""));
+        Set<User> soughtUsers = new HashSet<>();
+        Set<UserInfo> usersInfoByFirstLastName = new HashSet<>();
+        if(!userRegistrationRequest.getEmail().isEmpty()) {
+            User user = userRepository.findByEmail(userRegistrationRequest.getEmail());
+            if (user != null){
+                soughtUsers.add(user);
+                founded = true;
+            }
+        }
+        if(!founded && !userRegistrationRequest.getLogin().isEmpty()) {
+            User user = userRepository.findByUsername(userRegistrationRequest.getLogin());
+            if (user != null){
+                soughtUsers.add(user);
+                founded = true;
+            }
+        }
+
+        if(!founded && !userRegistrationRequest.getLast_name().isEmpty()){
+            usersInfoByFirstLastName = userInfoRepository.findAllByLastName(userRegistrationRequest.getLast_name());
+            if(!usersInfoByFirstLastName.isEmpty()){
+                foundByLastName = true;
+            }
+        }
+        if (!founded &&  !userRegistrationRequest.getFirst_name().isEmpty()){
+            Set<UserInfo> usersInfoByFirstName = userInfoRepository.findAllByFirstName(userRegistrationRequest.getFirst_name());
+            if(foundByLastName){
+                usersInfoByFirstLastName = usersInfoByFirstLastName.stream().filter(usersInfoByFirstName::contains).collect(Collectors.toSet());
+            } else {
+                usersInfoByFirstLastName = usersInfoByFirstName;
+            }
+        }
+        if(!founded && !usersInfoByFirstLastName.isEmpty()){
+            soughtUsers.addAll(usersInfoByFirstLastName.stream().map(UserInfo::getUser).collect(Collectors.toSet()));
+        }
+        return soughtUsers;
     }
 
 }

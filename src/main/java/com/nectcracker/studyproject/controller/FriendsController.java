@@ -14,11 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -67,14 +66,19 @@ public class FriendsController {
     }
 
     @GetMapping("/find_friends")
-    public String findFriends(Model model) throws ExecutionException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) userService.loadUserByUsername(auth.getName());
+    public String findFriends(Map<String, Object> model) throws ExecutionException {
+        model.put("founded", false);
+        return "find_friends";
+    }
 
-        Map<String, Set> friendsMapForForm = cache.get(user);
+    @PostMapping("/find_friends")
+    public String findFriend(@ModelAttribute("friendInfo") UserRegistrationRequest userRegistrationRequest, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
 
-        model.addAttribute("registeredFriends", friendsMapForForm.get("registered"));
-        return "friends";
+        Set<User> usersSet = userService.findFriend(userRegistrationRequest);
+        model.put("founded", true);
+        model.put("foundedUsers", usersSet);
+
+        return "find_friends";
     }
 
     @RequestMapping("/friend_page/{name}")

@@ -40,6 +40,10 @@ public class UserInfo implements Serializable {
     public UserInfo(){
     }
 
+    public boolean hasPhoto(){
+        return this.photo50 != null;
+    }
+
     @Override
     public String toString(){
         return "id: " + id + ";firstName: " + firstName + ";lastName: " + lastName + ";birthday: " + birthday + ";user id: " + user.getId();
