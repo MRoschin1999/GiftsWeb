@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -87,7 +88,7 @@ public class UserPageController {
             currentUserData.add(objectMapper.readTree(eventStr));
         }
 
-        Set<User> friends = user.getFriends();
+        Set<User> friends = user.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet());
         for (User friend : friends) {
             Set<Events> friendEvents = eventsService.getUserEvents(friend);
             for (Events event : friendEvents) {

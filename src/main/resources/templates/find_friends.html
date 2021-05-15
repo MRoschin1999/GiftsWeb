@@ -48,10 +48,18 @@
   <div th:if="${founded}">
     <h1>найденные люди</h1>
     <div th:each="friend : ${foundedUsers}">
-      <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}">
-        <img th:if="${friend.getInfo().hasPhoto()}" th:src="${friend.getInfo().photo50}">
-        <span hre th:text="${friend.getInfo().getFirstName()}"> </span>
-        <span th:text="${friend.getInfo().getLastName()}"></span></a>
+      <div th:if="${friend.value}">
+        <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.key.username})}">
+          <img th:if="${friend.key.getInfo().hasPhoto()}" th:src="${friend.key.getInfo().photo50}">
+          <span hre th:text="${friend.key.getInfo().getFirstName()}"> </span>
+          <span th:text="${friend.key.getInfo().getLastName()}"></span></a>
+      </div>
+      <div th:if="${!friend.value}">
+        <a href="not_friend_page.html" th:href="@{/not_friend_page/{name}(name=${friend.key.username})}">
+          <img th:if="${friend.key.getInfo().hasPhoto()}" th:src="${friend.key.getInfo().photo50}">
+          <span hre th:text="${friend.key.getInfo().getFirstName()}"> </span>
+          <span th:text="${friend.key.getInfo().getLastName()}"></span></a>
+      </div>
     </div>
   </div>
 </div>

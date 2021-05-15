@@ -73,10 +73,13 @@ public class FriendsController {
 
     @PostMapping("/find_friends")
     public String findFriend(@ModelAttribute("friendInfo") UserRegistrationRequest userRegistrationRequest, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
 
-        Set<User> usersSet = userService.findFriend(userRegistrationRequest);
+        Map<User, Boolean> usersMap = userService.findFriend(user, userRegistrationRequest);
+
         model.put("founded", true);
-        model.put("foundedUsers", usersSet);
+        model.put("foundedUsers", usersMap);
 
         return "find_friends";
     }
@@ -114,5 +117,28 @@ public class FriendsController {
         model.put("userWishes", userWishes);
 
         return "friend_page";
+    }
+
+    @RequestMapping("/not_friend_page/{name}")
+    public String notFriendPage(@PathVariable String name, Map<String, Object> model) throws IOException, ParseException {
+        model.put("name", name);
+
+        User friend = (User) userService.loadUserByUsername(name);
+        UserInfo currentUserInfo = userInfoRepository.findByUser(friend);
+        model.put("info", currentUserInfo);
+
+        Iterable<Interests> list = interestsService.getSmbInterests(friend);
+        model.put("interests", list);
+
+        return "not_friend_page";
+    }
+
+    @PostMapping("/not_friend_page")
+    public String addFriend(@RequestParam Long userId, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
+
+        User futureFriend = userService.getUserById(userId);
+
+
+        return "find_friends";
     }
 }

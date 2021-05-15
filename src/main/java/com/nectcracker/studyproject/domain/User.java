@@ -36,17 +36,11 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER, targetEntity = UserWishes.class, cascade = CascadeType.ALL)
     private Set<UserWishes> wishes;
 
-    @ManyToMany
-    @JoinTable(name = "tbl_friends",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    private Set<User> friends;
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = UserFriends.class, cascade = CascadeType.ALL)
+    private Set<UserFriends> friends;
 
-    @ManyToMany
-    @JoinTable(name = "tbl_friends",
-            joinColumns = @JoinColumn(name = "friend_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> friendsOf;
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = UserFriends.class, cascade = CascadeType.ALL)
+    private Set<UserFriends> friendsOf;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

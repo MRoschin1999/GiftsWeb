@@ -82,8 +82,8 @@
         <span th:text="${info.lastName}"></span>
     </div>
 
-    <div class="font-italic m-3">Ваш друг интересуется:</div>
-    <span class="m-3" th:if="${interests.isEmpty()}">Кажется у вашего друга нет инетресов</span>
+    <div class="font-italic m-3">Интересы пользователя:</div>
+    <span class="m-3" th:if="${interests.isEmpty()}">Кажется у пользователя нет инетресов</span>
     <div class="card-deck m-3">
         <div th:each="i : ${interests}">
             <div class="card bg-light mb-3" style="max-width: 18rem;">

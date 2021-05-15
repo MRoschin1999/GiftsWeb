@@ -1,9 +1,6 @@
 package com.nectcracker.studyproject.service;
 
-import com.nectcracker.studyproject.domain.Chat;
-import com.nectcracker.studyproject.domain.News;
-import com.nectcracker.studyproject.domain.NewsUsers;
-import com.nectcracker.studyproject.domain.User;
+import com.nectcracker.studyproject.domain.*;
 import com.nectcracker.studyproject.repos.NewsRepository;
 import com.nectcracker.studyproject.repos.NewsUsersRepository;
 import org.springframework.stereotype.Service;
@@ -12,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class NewsService {
@@ -26,9 +24,9 @@ public class NewsService {
     private void createNew(Chat chat, User user, String text) {
         News newForFriends = new News();
         newForFriends.setText(text);
-        Set<User> friends = new HashSet<>(user.getFriends());
+        Set<User> friends = new HashSet<>(user.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()));
         User wishOwnerUser = chat.getWishForChat().getUser();
-        friends.retainAll(wishOwnerUser.getFriends());
+        friends.retainAll(wishOwnerUser.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()));
         if (!friends.isEmpty()) {
             newForFriends.addAllUsers(friends);
 

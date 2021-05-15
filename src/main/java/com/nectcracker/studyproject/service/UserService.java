@@ -6,15 +6,14 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import com.nectcracker.studyproject.domain.Role;
-import com.nectcracker.studyproject.domain.User;
-import com.nectcracker.studyproject.domain.UserInfo;
-import com.nectcracker.studyproject.domain.UserRegistrationRequest;
+import com.nectcracker.studyproject.domain.*;
 import com.nectcracker.studyproject.json.friendsFromVK.FriendsFromVk;
 import com.nectcracker.studyproject.json.friendsFromVK.Nickname;
+import com.nectcracker.studyproject.repos.UserFriendsRepository;
 import com.nectcracker.studyproject.repos.UserInfoRepository;
 import com.nectcracker.studyproject.repos.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,26 +43,31 @@ public class UserService implements UserDetailsService {
     private final MailSender mailSender;
     private final ObjectMapper objectMapper;
     private final OAuth20Service vkScribejavaService;
+    private final UserFriendsRepository userFriendsRepository;
 
     private String accessToken;
-
 
 
     private Random random = new Random();
 
 
-    public UserService(UserRepository userRepository, MailSender mailSender, UserInfoRepository userInfoRepository, PasswordEncoder passwordEncoder, ObjectMapper objectMapper, OAuth20Service vkScribejavaService) {
+    public UserService(UserRepository userRepository, MailSender mailSender, UserInfoRepository userInfoRepository, PasswordEncoder passwordEncoder, ObjectMapper objectMapper, OAuth20Service vkScribejavaService, UserFriendsRepository userFriendsRepository) {
         this.userRepository = userRepository;
         this.mailSender = mailSender;
         this.userInfoRepository = userInfoRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
         this.vkScribejavaService = vkScribejavaService;
+        this.userFriendsRepository = userFriendsRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
+    }
+
+    public User getUserById(Long id){
+        return userRepository.findById(id).orElse(null);
     }
 
     public void setAccessToken(String accessToken){
@@ -169,9 +173,15 @@ public class UserService implements UserDetailsService {
                     friendsNicknamesSetNotRegistered.add(friendsNickname);
             }
         }
-        if(friendsSetRegistered.size() != 0 && (user.getFriends() == null || !user.getFriends().equals(friendsSetRegistered))) {
-            user.setFriends(friendsSetRegistered);
-            user.setFriendsOf(friendsSetRegistered);
+        if(friendsSetRegistered.size() != 0 && (user.getFriends() == null || !user.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()).equals(friendsSetRegistered))) {
+            Set<UserFriends> setFriends= new HashSet<>();
+            Set<UserFriends> setFriendsOf = new HashSet<>();
+            for (User friend : friendsSetRegistered){
+                setFriends.add(new UserFriends(user, friend, true));
+                setFriendsOf.add(new UserFriends(friend, user, true));
+            }
+            user.setFriends(setFriends);
+            user.setFriendsOf(setFriendsOf);
             userRepository.save(user);
         }
 
@@ -181,35 +191,35 @@ public class UserService implements UserDetailsService {
         return friendMapForForm;
     }
 
-    public Map<String, Set> getFriends(User user) throws InterruptedException, ExecutionException, IOException {
-        HashMap<String, Set> resultFriendsMap = new HashMap<>();
+    public Map<String, Set<User>> getFriends(User user) throws InterruptedException, ExecutionException, IOException {
+        HashMap<String, Set<User>> resultFriendsMap = new HashMap<>();
         if(user.getVkId() != null){
             takeFriendFromVk(user);
         }
-        resultFriendsMap.put("registered", userRepository.findAllByFriends(user));
+        resultFriendsMap.put("registered", userFriendsRepository.findAllByUser(user).stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()));
         return resultFriendsMap;
     }
 
-    public Set<User> findFriend(UserRegistrationRequest userRegistrationRequest) {
+    public Map<User, Boolean> findFriend(User firstUser, UserRegistrationRequest userRegistrationRequest) {
         boolean founded = false;
         boolean foundByLastName = false;
         userRegistrationRequest.setEmail(userRegistrationRequest.getEmail().replaceAll(" ", ""));
         userRegistrationRequest.setLogin(userRegistrationRequest.getLogin().replaceAll(" ", ""));
         userRegistrationRequest.setFirst_name(userRegistrationRequest.getFirst_name().replaceAll(" ", ""));
         userRegistrationRequest.setLast_name(userRegistrationRequest.getLast_name().replaceAll(" ", ""));
-        Set<User> soughtUsers = new HashSet<>();
+        Map<User, Boolean> soughtUsers = new HashMap<>();
         Set<UserInfo> usersInfoByFirstLastName = new HashSet<>();
         if(!userRegistrationRequest.getEmail().isEmpty()) {
             User user = userRepository.findByEmail(userRegistrationRequest.getEmail());
             if (user != null){
-                soughtUsers.add(user);
+                soughtUsers.put(user, firstUser.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()).contains(user));
                 founded = true;
             }
         }
         if(!founded && !userRegistrationRequest.getLogin().isEmpty()) {
             User user = userRepository.findByUsername(userRegistrationRequest.getLogin());
             if (user != null){
-                soughtUsers.add(user);
+                soughtUsers.put(user, firstUser.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()).contains(user));
                 founded = true;
             }
         }
@@ -229,7 +239,9 @@ public class UserService implements UserDetailsService {
             }
         }
         if(!founded && !usersInfoByFirstLastName.isEmpty()){
-            soughtUsers.addAll(usersInfoByFirstLastName.stream().map(UserInfo::getUser).collect(Collectors.toSet()));
+            for (UserInfo userInfo : usersInfoByFirstLastName){
+                soughtUsers.put(userInfo.getUser(), firstUser.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()).contains(userInfo.getUser()));
+            }
         }
         return soughtUsers;
     }

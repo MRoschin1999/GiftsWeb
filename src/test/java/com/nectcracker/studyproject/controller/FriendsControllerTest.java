@@ -43,10 +43,11 @@ public class FriendsControllerTest {
     @Autowired
     private UserService userService;
 
+
     @Test
     public void correctLastName() throws Exception {
         User user = userWishesService.findByAuthentication();
-        User friend = userRepository.findAllByFriends(user).iterator().next();
+        User friend = userService.getFriends(user).get("registered").iterator().next();
         this.mockMvc.perform(get("/friend_page/" + friend.getUsername()))
                 .andExpect(authenticated())
                 .andExpect(status().isOk())
