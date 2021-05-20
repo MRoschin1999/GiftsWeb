@@ -14,7 +14,7 @@
                 <span class="navbar-text mx-3">
                             [[${#httpServletRequest.getSession().getAttribute("name")}]]
                 </span>
-            <form th:action="@{/logout}" method="post">
+            <form th:if="${#httpServletRequest.getSession().getAttribute('name')}!=null" th:action="@{/logout}" method="post">
                 <button class="btn btn-primary" type="submit">Выйти</button>
             </form>
         </div>

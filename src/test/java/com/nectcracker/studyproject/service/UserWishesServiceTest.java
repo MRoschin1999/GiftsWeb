@@ -66,7 +66,7 @@ public class UserWishesServiceTest {
 
     @Test
     public void testIfWeCanAddUserWish() throws Exception {
-        userWishesService.addWish("compas", "", "");
+        userWishesService.addWish("compas", "", "", "");
         User user = userRepository.findByUsername("a");
         List<UserWishes> result = userWishesRepository.findByUserId(user.getId());
         assertThat(result.size(), is(4));
@@ -80,7 +80,7 @@ public class UserWishesServiceTest {
 
     @Test
     public void testIfWeCanAddUserWishFromFriend() throws Exception {
-        userWishesService.addWishFromFriend("b", "compas", "", "");
+        userWishesService.addWishFromFriend("b", "compas", "", "", "");
         User userA = userRepository.findByUsername("a");
         List<UserWishes> result = userWishesRepository.findByUserId(userA.getId());
         this.mockMvc.perform(get("/cabinet"))

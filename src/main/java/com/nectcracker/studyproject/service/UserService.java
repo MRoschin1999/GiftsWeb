@@ -13,7 +13,6 @@ import com.nectcracker.studyproject.repos.UserFriendsRepository;
 import com.nectcracker.studyproject.repos.UserInfoRepository;
 import com.nectcracker.studyproject.repos.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -246,4 +245,31 @@ public class UserService implements UserDetailsService {
         return soughtUsers;
     }
 
+    public void sendFriendRequest(User user, User friend){
+        UserFriends userFriends = new UserFriends(user, friend, false);
+        Set<UserFriends> friends = userFriendsRepository.findAllByUser(user);
+
+        if(!friends.stream().map(UserFriends::getFriend).collect(Collectors.toSet()).contains(friend)){
+            userFriendsRepository.save(userFriends);
+        }
+    }
+
+    public void acceptFriendRequest(User user, User friend){
+        UserFriends userFriend = userFriendsRepository.findByUserAndFriend(friend, user);
+        UserFriends userFriend2;
+        if(userFriendsRepository.findByUserAndFriend(user, friend) == null)
+            userFriend2 = new UserFriends(user, friend, true);
+        else
+            userFriend2 = userFriendsRepository.findByUserAndFriend(friend, user);
+
+        userFriend.setAccept(true);
+        userFriend2.setAccept(true);
+        userFriendsRepository.save(userFriend);
+        userFriendsRepository.save(userFriend2);
+    }
+
+    public Set<User> getFriendsRequests(User user){
+        Set<UserFriends> friends = userFriendsRepository.findAllByFriend(user);
+        return friends.stream().filter(o-> !o.isAccept()).map(UserFriends::getUser).collect(Collectors.toSet());
+    }
 }

@@ -176,11 +176,12 @@
            aria-controls="collapseExample">+</a>
         <div class="collapse" id="collapseExample">
             <div class="form-group my-3">
-                <form th:action="@{/new_wish}" method="post" class="form-inline">
+                <form th:action="@{/new_wish}" method="post" >
                     <div>
-                        <p>Название желания</p>
-                        <input type="text" class="form-control" name="text" placeholder="Название"/>
-                        <input type="text" class="form-control" name="imgURL" placeholder="Ссылка на изображение"/>
+                        <p>Создание желания</p>
+                        <input type="text" class="form-control form-group" name="text" placeholder="Название"/>
+                        <input type="text" class="form-control form-group" name="imgURL" placeholder="Ссылка на изображение"/>
+                        <input type="text" class="form-control form-group" name="shopURL" placeholder="Ссылка на интернет-магазин"/>
                         <button type="submit" class="btn btn-primary mx-3">Добавить</button>
                         <p>Событие к которому желание относится(не обязательно)</p>
                         <p><select name="eventsId">
@@ -202,13 +203,12 @@
                         <img class="card-img-top" th:attr="src=${w.getImgURL()},title=${w.getImgURL()},alt=${w.getImgURL()}" >
                     </div>
                     <div class="card-body text-info">
-                        <h5 class="card-title">
-                            <p>Желание: [[${w.wishName}]]</p>
-                            <p th:if="${w.eventForWish}">Событие: [[${w.eventForWish.title}]]</p>
-                            <form th:action="@{/deleteWish/{id}(id=${w.getId()})}" class="form-inline m-3" method="post">
-                                <button type="submit" class="btn btn-primary mt-3">Удалить</button>
-                            </form>
-                        </h5>
+                        <p>Желание: [[${w.wishName}]]</p>
+                        <p th:if="${!w.getShopURL().isEmpty()}"><a th:href="${w.getShopURL()}"><span>Ссылка на интернет магазин</span></a></p>
+                        <p th:if="${w.eventForWish}">Событие: [[${w.eventForWish.title}]]</p>
+                        <form th:action="@{/deleteWish/{id}(id=${w.getId()})}" class="form-inline m-3" method="post">
+                            <button type="submit" class="btn btn-primary mt-3">Удалить</button>
+                        </form>
                     </div>
                 </div>
             </div>

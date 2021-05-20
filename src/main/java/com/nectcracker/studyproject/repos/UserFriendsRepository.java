@@ -8,4 +8,6 @@ import java.util.Set;
 
 public interface UserFriendsRepository extends JpaRepository<UserFriends, Long> {
     Set<UserFriends> findAllByUser(User user);
+    Set<UserFriends> findAllByFriend(User user);
+    UserFriends findByUserAndFriend(User user, User friend);
 }

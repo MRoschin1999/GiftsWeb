@@ -4,14 +4,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table
 @Slf4j
 @Data
-public class UserWishes implements Serializable {
+public class UserWishes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,16 +25,18 @@ public class UserWishes implements Serializable {
     private String wishName;
     private boolean friendCreateWish;
     private String imgURL;
+    private String shopURL;
     private boolean isClosed;
     private boolean deleted;
 
     @OneToOne(mappedBy = "wishForChat", cascade = CascadeType.ALL)
     private Chat chatForWish;
 
-    public UserWishes(User user, String wish, String imgURL) {
+    public UserWishes(User user, String wish, String imgURL, String shopURL) {
         this.user = user;
         this.wishName = wish;
         this.imgURL = imgURL;
+        this.shopURL = shopURL;
         this.isClosed = false;
         this.deleted = false;
     }

@@ -56,8 +56,8 @@ public class FriendsControllerTest {
 
     @Test
     public void correctWishOnFriendPage() throws Exception{
-        userWishesService.addWishFromFriend("a", "wishFromFriend", "", "");
-        userWishesService.addWish("myOwnWish", "" ,"");
+        userWishesService.addWishFromFriend("a", "wishFromFriend", "", "",  "");
+        userWishesService.addWish("myOwnWish", "" ,"", "");
         Iterable<UserWishes> wishes = userWishesService.getUserWishes(userRepository.findByUsername("a"));
         List<UserWishes> result = new ArrayList<>();
         wishes.forEach(result::add);

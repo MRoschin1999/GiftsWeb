@@ -34,15 +34,15 @@ public class WishController {
     }
 
     @PostMapping("/new_wish")
-    public String addWish(@RequestParam String text,@RequestParam String eventsId, @RequestParam String imgURL, Map<String, Object> model) {
-        userWishesService.addWish(text, eventsId, imgURL);
+    public String addWish(@RequestParam String text,@RequestParam String eventsId, @RequestParam String imgURL, @RequestParam String shopURL, Map<String, Object> model) {
+        userWishesService.addWish(text, eventsId, imgURL, shopURL);
         return "redirect:/cabinet";
     }
 
 
     @PostMapping("/new_wish_from_friend")
-    public String addWishFromFriend(@RequestParam String name, @RequestParam String text, @RequestParam String eventsId, @RequestParam String imgURL) {
-        userWishesService.addWishFromFriend(name, text, eventsId, imgURL);
+    public String addWishFromFriend(@RequestParam String name, @RequestParam String text, @RequestParam String eventsId, @RequestParam String imgURL, @RequestParam String shopURL) {
+        userWishesService.addWishFromFriend(name, text, eventsId, imgURL, shopURL);
         return "redirect:/friend_page/" + name;
     }
 

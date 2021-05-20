@@ -16,18 +16,16 @@
   <div th:insert="fragments/settings :: settings"></div>
   <h3 class="m-3">Заполните поля кпо которым хотите осуществить поиск</h3>
   <form th:object = "${friendInfo}" th:action="@{/find_friends}" method="post" id="search_friend">
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label> Имя: </label>
-        <div class="col-sm-6">
-          <input class="form-control" type="text" name="first_name"/>
-        </div>
+    <div class="form-group">
+      <label class="col-sm-1 col-form-label"> Имя: </label>
+      <div class="col-sm-6">
+        <input class="form-control" type="text" name="first_name"/>
       </div>
-      <div class="form-group col-md-6">
-        <label> Фамилия: </label>
-        <div class="col-sm-6">
-          <input class="form-control" type="text" name="last_name"/>
-        </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-1 col-form-label"> Фамилия: </label>
+      <div class="col-sm-6">
+        <input class="form-control" type="text" name="last_name"/>
       </div>
     </div>
     <div class="form-group">
@@ -47,6 +45,7 @@
   </form>
   <div th:if="${founded}">
     <h1>найденные люди</h1>
+    <span th:text="${message}"></span>
     <div th:each="friend : ${foundedUsers}">
       <div th:if="${friend.value}">
         <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.key.username})}">

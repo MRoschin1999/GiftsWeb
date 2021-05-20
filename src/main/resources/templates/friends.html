@@ -17,7 +17,14 @@
     <h2>Ваши друзья, которые уже в системе</h2>
     <div th:if="${registeredFriends.isEmpty()}">Пока у вас нет друзей нет</div>
     <div th:each="friend : ${registeredFriends}">
-        <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}"><img th:src="${friend.getInfo().photo50}"> <span hre th:text="${friend.getInfo().getFirstName()}"> </span> <span th:text="${friend.getInfo().getLastName()}"></span></a>
+        <a href="friend_page.html" th:href="@{/friend_page/{name}(name=${friend.username})}"><img th:src="${friend.getInfo().photo50}"> <span th:text="${friend.getInfo().getFirstName()}"> </span> <span th:text="${friend.getInfo().getLastName()}"></span></a>
+    </div>
+    <h2>Запросы в друзья</h2>
+    <div th:each="friend : ${friendsRequests}">
+        <a href="not_friend_page.html" th:href="@{/not_friend_page/{name}(name=${friend.username})}"><img th:if="${friend.getInfo().photo50}" th:src="${friend.getInfo().photo50}"> <span th:text="${friend.getInfo().getFirstName()}"> </span> <span th:text="${friend.getInfo().getLastName()}"></span></a>
+        <form th:action="@{/accept_friend/{id}(id=${friend.getId()})}" method="post">
+            <button type="submit" class="btn btn-primary m-3">Приянять запрос в друзья</button>
+        </form>
     </div>
 </div>
 <div th:insert="fragments/settings :: settings"></div>

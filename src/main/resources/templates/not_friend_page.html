@@ -34,11 +34,11 @@
       </div>
     </div>
   </div>
-
-
-  <form th:action="@{/join_chat/{id}(id=${info.id})}" method="post">
-    <button type="submit" class="btn btn-primary m-3">Добавить в друзья</button>
-  </form>
+  <div th:if="${!alreadySendRequest}">
+    <form th:action="@{/add_friend/{id}(id=${info.getUser().id})}" method="post">
+      <button type="submit" class="btn btn-primary m-3">Добавить в друзья</button>
+    </form>
+  </div>
 
 </div>
 <div th:insert="fragments/settings :: settings"></div>

@@ -103,11 +103,12 @@
            aria-controls="collapseExample">+</a>
         <div class="collapse" id="collapseExample">
             <div class="form-group my-3">
-                <form th:action="@{/new_wish_from_friend}" method="post" class="form-inline">
+                <form th:action="@{/new_wish_from_friend}" method="post">
                     <div>
                         <p>Название желания</p>
-                        <input type="text" class="form-control" name="text" placeholder="Название"/>
-                        <input type="text" class="form-control" name="imgURL" placeholder="Ссылка на изображение"/>
+                        <input type="text" class="form-control form-group" name="text" placeholder="Название"/>
+                        <input type="text" class="form-control form-group" name="imgURL" placeholder="Ссылка на изображение"/>
+                        <input type="text" class="form-control form-group" name="shopURL" placeholder="Ссылка на интернет-магазин"/>
                         <input type="hidden" name="name" th:value="${name}"/>
                         <button type="submit" class="btn btn-primary mx-3">Добавить</button>
                         <p>Событие к которому желание относится(не обязательно)</p>
@@ -132,6 +133,7 @@
                     <div class="card-body text-info">
                         <h5 class="card-title">
                             <p>Желание: [[${uw.wishName}]]</p>
+                            <p><a th:if="${uw.getShopURL().isEmpty()}" th:href="${uw.getShopURL()}"><span>Ссылка на интернет магазин</span></a></p>
                             <p th:if="${uw.eventForWish}">Событие: [[${uw.eventForWish.title}]]</p>
                         </h5>
                         <div th:if="${uw.isClosed()}">
@@ -167,6 +169,7 @@
                     <div class="card-body text-info">
                         <h5 class="card-title">
                             <p>Желание: [[${fw.wishName}]]</p>
+                            <p><a th:if="${fw.getShopURL().isEmpty()}" th:href="${fw.getShopURL()}"><span>Ссылка на интернет магазин</span></a></p>
                             <p th:if="${fw.eventForWish}">Событие: [[${fw.eventForWish.title}]]</p>
                         </h5>
                         <div class="card-text">

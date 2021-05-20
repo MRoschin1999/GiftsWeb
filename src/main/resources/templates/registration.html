@@ -12,18 +12,16 @@
 <div th:insert="fragments/navbar :: header"></div>
 <h3 class="m-3">Создание пользователя</h3>
 <form th:object = "${userRegistrationRequest}" th:action="@{/registration}" method="post" class="m-3">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label> Имя: </label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" name="first_name"/>
-            </div>
+    <div class="form-group">
+        <label class="col-sm-1 col-form-label"> Имя: </label>
+        <div class="col-sm-6">
+            <input class="form-control" type="text" name="first_name"/>
         </div>
-        <div class="form-group col-md-6">
-            <label> Фамилия: </label>
-            <div class="col-sm-6">
-                <input class="form-control" type="text" name="last_name"/>
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-1 col-form-label"> Фамилия: </label>
+        <div class="col-sm-6">
+            <input class="form-control" type="text" name="last_name"/>
         </div>
     </div>
     <div class="form-group">
@@ -34,7 +32,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-1 col-form-label"> Имя пользователя на сайте: </label>
+        <label class="col-sm-1 col-form-label"> Логин: </label>
         <div class="col-sm-6">
             <input class="form-control" type="text" name="login"/>
         </div>

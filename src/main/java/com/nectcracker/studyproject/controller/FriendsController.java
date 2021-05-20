@@ -6,10 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.nectcracker.studyproject.domain.*;
 import com.nectcracker.studyproject.repos.UserInfoRepository;
-import com.nectcracker.studyproject.service.EventsService;
-import com.nectcracker.studyproject.service.InterestsService;
-import com.nectcracker.studyproject.service.UserService;
-import com.nectcracker.studyproject.service.UserWishesService;
+import com.nectcracker.studyproject.service.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,7 +17,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.util.*;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +30,7 @@ public class FriendsController {
     private final UserInfoRepository userInfoRepository;
     private final EventsService eventsService;
     private final ObjectMapper objectMapper;
+    private final UserFriendsService userFriendsService;
 
     private CacheLoader<User, Map> loader = new CacheLoader<User, Map>() {
         @Override
@@ -45,13 +42,14 @@ public class FriendsController {
 
 
     public FriendsController(UserService userService, InterestsService interestsService,
-                             UserWishesService userWishesService, UserInfoRepository userInfoRepository, EventsService eventsService, ObjectMapper objectMapper) {
+                             UserWishesService userWishesService, UserInfoRepository userInfoRepository, EventsService eventsService, ObjectMapper objectMapper, UserFriendsService userFriendsService) {
         this.userService = userService;
         this.interestsService = interestsService;
         this.userWishesService = userWishesService;
         this.userInfoRepository = userInfoRepository;
         this.eventsService = eventsService;
         this.objectMapper = objectMapper;
+        this.userFriendsService = userFriendsService;
     }
 
     @GetMapping("/friends")
@@ -60,8 +58,10 @@ public class FriendsController {
         User user = (User) userService.loadUserByUsername(auth.getName());
 
         Map<String, Set> friendsMapForForm = cache.get(user);
+        Set<User> friendsRequests = userService.getFriendsRequests(user);
 
         model.addAttribute("registeredFriends", friendsMapForForm.get("registered"));
+        model.addAttribute("friendsRequests", friendsRequests);
         return "friends";
     }
 
@@ -77,6 +77,7 @@ public class FriendsController {
         User user = (User) userService.loadUserByUsername(auth.getName());
 
         Map<User, Boolean> usersMap = userService.findFriend(user, userRegistrationRequest);
+        usersMap.remove(user);
 
         model.put("founded", true);
         model.put("foundedUsers", usersMap);
@@ -121,6 +122,9 @@ public class FriendsController {
 
     @RequestMapping("/not_friend_page/{name}")
     public String notFriendPage(@PathVariable String name, Map<String, Object> model) throws IOException, ParseException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
+
         model.put("name", name);
 
         User friend = (User) userService.loadUserByUsername(name);
@@ -130,15 +134,33 @@ public class FriendsController {
         Iterable<Interests> list = interestsService.getSmbInterests(friend);
         model.put("interests", list);
 
+        model.put("alreadySendRequest", userFriendsService.isAccept(user, friend));
+
         return "not_friend_page";
     }
 
-    @PostMapping("/not_friend_page")
-    public String addFriend(@RequestParam Long userId, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
+    @PostMapping("/add_friend/{id}")
+    public String addFriend(@PathVariable Long id, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
 
-        User futureFriend = userService.getUserById(userId);
+        User futureFriend = userService.getUserById(id);
+        userService.sendFriendRequest(user, futureFriend);
 
+        model.put("message", "Запрос отправлен");
 
         return "find_friends";
+    }
+
+    @PostMapping("/accept_friend/{id}")
+    public String acceptFriend(@PathVariable Long id, Map<String, Object> model) throws IOException, GeneralSecurityException, ParseException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
+
+        User futureFriend = userService.getUserById(id);
+        userService.acceptFriendRequest(user, futureFriend);
+
+        cache.refresh(user);
+        return "redirect:/friends";
     }
 }
