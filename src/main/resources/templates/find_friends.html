@@ -14,7 +14,7 @@
 </div><div style="display : inline-block; vertical-align: top;">
   <h1>Список друзей</h1>
   <div th:insert="fragments/settings :: settings"></div>
-  <h3 class="m-3">Заполните поля кпо которым хотите осуществить поиск</h3>
+  <h3 class="m-3">Заполните поля по которым хотите осуществить поиск</h3>
   <form th:object = "${friendInfo}" th:action="@{/find_friends}" method="post" id="search_friend">
     <div class="form-group">
       <label class="col-sm-1 col-form-label"> Имя: </label>

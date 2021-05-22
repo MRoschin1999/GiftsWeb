@@ -10,7 +10,6 @@ import com.nectcracker.studyproject.repos.UserRepository;
 import com.nectcracker.studyproject.repos.UserWishesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -110,14 +109,12 @@ public class ChatService {
         }
     }
 
-    public void donateMoneyForWish(Long wishId, String sum) {
+    public void donateMoneyForWish(Long wishId, String sum, Participants currentParticipant) {
         if(sum.isEmpty() || !sum.matches("([\\d]*[.]?[\\d]+)")) {
             return;
         }
         UserWishes wish = userWishesService.getById(wishId);
         Chat currentChat = chatRepository.findByWishForChat(wish);
-        User currentUser = userWishesService.findByAuthentication();
-        Participants currentParticipant = participantsRepository.findByUserForChatAndChat(currentUser, currentChat);
         currentParticipant.updateSumFromUser(Double.parseDouble(sum));
         participantsRepository.save(currentParticipant);
         chatRepository.save(currentChat);

@@ -71,13 +71,21 @@
         </div>
     </div>
     <div style="position: relative;
-                height: 30vh">
+                height: 30vh;margin-bottom: 35px">
         <div class="smallcolumns">
-            <h5 class="font-italic m-3">Внести деньги</h5>
-            <form method="post" th:action="@{/donate/{id}(id=${wishId})}" class="form-inline m-3">
-                <input type="text" class="form-control" name="sum" placeholder="Сумма"/>
-                <button type="submit" class="btn btn-primary mx-3">Внести!</button>
-            </form>
+            <div th:if="${ownerPage}">
+                <h5 class="font-italic m-3">Внести деньги</h5>
+                <form method="post" th:action="@{/donate/{id}(id=${wishId})}" class="m-3">
+                    <input type="text" class="form-control" name="sum" placeholder="Сумма"/>
+                    <div class="form-inline m-3">
+                        <select name="participantId">
+                            <option th:each="i : ${participants}" th:value="${i.getId()}" th:text="${i.getUserForChat().getInfo().getFirstName()} + ' ' + ${i.getUserForChat().getInfo().getLastName()}">
+                            </option>
+                        </select>
+                        <button type="submit" class="btn btn-primary mx-3">Внести!</button>
+                    </div>
+                </form>
+            </div>
             <div class="container m-1">
                 <span class="left">Собрано: </span>
                 <span class="right"> [[${chat.sumCurrentPrice()}]] руб. </span>
@@ -122,8 +130,7 @@
              width: 500px;
              vertical-align: top;"
                  class="holder">
-            <span style="padding: 10px;
-                         display: block;"
+            <span style="display: block;"
                   id="container-hold"></span>
             </div>
 

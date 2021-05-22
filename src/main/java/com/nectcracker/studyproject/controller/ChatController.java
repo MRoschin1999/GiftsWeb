@@ -7,9 +7,12 @@ import com.nectcracker.studyproject.domain.UserWishes;
 import com.nectcracker.studyproject.repos.ParticipantsRepository;
 import com.nectcracker.studyproject.service.ChatService;
 import com.nectcracker.studyproject.service.MessagesService;
+import com.nectcracker.studyproject.service.UserService;
 import com.nectcracker.studyproject.service.UserWishesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,14 +28,16 @@ public class ChatController {
     private final ChatService chatService;
     private final MessagesService messagesService;
     private final ParticipantsRepository participantsRepository;
+    private final UserService userService;
 
     public ChatController(UserWishesService userWishesService,
                           ChatService chatService, MessagesService messagesService,
-                          ParticipantsRepository participantsRepository) {
+                          ParticipantsRepository participantsRepository, UserService userService) {
         this.userWishesService = userWishesService;
         this.chatService = chatService;
         this.messagesService = messagesService;
         this.participantsRepository = participantsRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/join_chat/{id}")
@@ -100,8 +105,13 @@ public class ChatController {
     }
 
     @PostMapping("/donate/{id}")
-    public ModelAndView donateMoneyForWish(@PathVariable Long id, @RequestParam String sum) {
-        chatService.donateMoneyForWish(id, sum);
+    public ModelAndView donateMoneyForWish(@PathVariable Long id, @RequestParam String sum,  @RequestParam Long participantId) {
+        Chat chat = chatService.getById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) userService.loadUserByUsername(auth.getName());
+
+        if(user.equals(chat.getOwner()))
+            chatService.donateMoneyForWish(id, sum, participantsRepository.findById(participantId).get());
         ModelAndView modelAndView = new ModelAndView("redirect:/chat");
         modelAndView.addObject("wishId", id);
         return modelAndView;

@@ -47,11 +47,5 @@ public class ChatServiceTest {
         assertThat(chatService.getById(1L).getDescription(), containsString("AAA"));
     }
 
-    @Test
-    @Ignore
-    public void testThatDonatingProcessWorkCorrectly() {
-        double initialValue = chatService.getById(1L).sumCurrentPrice();
-        chatService.donateMoneyForWish(1L, "11.0");
-        assertThat(chatService.getById(1L).sumCurrentPrice(), is(initialValue + 11));
-    }
+
 }

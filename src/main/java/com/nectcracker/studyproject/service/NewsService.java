@@ -3,6 +3,7 @@ package com.nectcracker.studyproject.service;
 import com.nectcracker.studyproject.domain.*;
 import com.nectcracker.studyproject.repos.NewsRepository;
 import com.nectcracker.studyproject.repos.NewsUsersRepository;
+import com.nectcracker.studyproject.repos.UserFriendsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,18 +16,21 @@ import java.util.stream.Collectors;
 public class NewsService {
     private final NewsRepository newsRepository;
     private final NewsUsersRepository newsUsersRepository;
+    private final UserFriendsRepository userFriendsRepository;
 
-    public NewsService(NewsRepository newsRepository, NewsUsersRepository newsUsersRepository) {
+    public NewsService(NewsRepository newsRepository, NewsUsersRepository newsUsersRepository, UserFriendsRepository userFriendsRepository) {
         this.newsRepository = newsRepository;
         this.newsUsersRepository = newsUsersRepository;
+        this.userFriendsRepository = userFriendsRepository;
     }
 
     private void createNew(Chat chat, User user, String text) {
         News newForFriends = new News();
         newForFriends.setText(text);
-        Set<User> friends = new HashSet<>(user.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()));
+        Set<User> friends = userFriendsRepository.findAllByFriend(user).stream().filter(UserFriends::isAccept).map(UserFriends::getUser).collect(Collectors.toSet());
         User wishOwnerUser = chat.getWishForChat().getUser();
-        friends.retainAll(wishOwnerUser.getFriends().stream().filter(UserFriends::isAccept).map(UserFriends::getFriend).collect(Collectors.toSet()));
+        Set<User> someFriens = userFriendsRepository.findAllByFriend(wishOwnerUser).stream().filter(UserFriends::isAccept).map(UserFriends::getUser).collect(Collectors.toSet());
+        friends.retainAll(someFriens);
         if (!friends.isEmpty()) {
             newForFriends.addAllUsers(friends);
 
