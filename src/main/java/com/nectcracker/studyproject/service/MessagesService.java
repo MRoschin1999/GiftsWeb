@@ -42,7 +42,7 @@ public class MessagesService {
     public void receiveMessage(String sentMessage, Long wishId) {
         User currentUser = userWishesService.findByAuthentication();
         Chat currentChat = chatRepository.findByWishForChat(userWishesService.getById(wishId));
-        Messages message = new Messages(currentChat, currentUser, sentMessage);
+        Messages message = new Messages(currentChat, currentUser, ": " + sentMessage);
         messagesRepository.save(message);
     }
 }

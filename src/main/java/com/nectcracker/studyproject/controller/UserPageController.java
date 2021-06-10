@@ -7,13 +7,8 @@ import com.google.common.cache.LoadingCache;
 import com.nectcracker.studyproject.domain.*;
 import com.nectcracker.studyproject.repos.UserInfoRepository;
 import com.nectcracker.studyproject.repos.UserRepository;
-import com.nectcracker.studyproject.service.EventsService;
-import com.nectcracker.studyproject.service.InterestsService;
-import com.nectcracker.studyproject.service.UserService;
-import com.nectcracker.studyproject.service.NewsService;
-import com.nectcracker.studyproject.service.UserWishesService;
+import com.nectcracker.studyproject.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -25,15 +20,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.*;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
-public class UserPageController {
+public class  UserPageController {
     private final UserWishesService userWishesService;
     private final UserInfoRepository userInfoRepository;
     private final UserRepository userRepository;
@@ -71,6 +68,7 @@ public class UserPageController {
         User user = userRepository.findByUsername(auth.getName());
         UserInfo currentUserInfo = userInfoRepository.findByUser(user);
         model.put("info", currentUserInfo);
+        model.put("fromVk", user.getVkId() != null);
         Iterable<UserWishes> list = userWishesService.getUserWishes(user);
         model.put("wishes", list);
         Iterable<Interests> interests = interestsService.getUserInterests();
@@ -107,7 +105,12 @@ public class UserPageController {
     }
 
     @PostMapping("/setInterest")
-    public void setInterestByVk(){
+    public String setInterestByVk() throws IOException, ExecutionException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(auth.getName());
+        interestsService.findInterestByVk(user);
+        //interestsService.updateUserInterests("Кулинария");
+        return "redirect:/cabinet";
     //TODO send call to microservice
     }
 }

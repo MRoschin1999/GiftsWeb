@@ -14,20 +14,26 @@
 <div style="display : inline-block; vertical-align: top;">
     <h1>Новый чат для желания [[${wishInfo}]] для пользователя [[${username}]]</h1>
     <form th:action="@{/new_chat/{id}(id=${wishId})}" method="post">
-    <div class="form-group my-3">
+        <div class="form-group my-3">
             <label class="col-sm-3 col-form-label"> Описание:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" name="description" placeholder="Введите описание"/>
             </div>
         </div>
         <div class="form-group my-3">
-            <label class="col-sm-3 col-form-label"> Сумма:</label>
+            <label class="col-sm-3 col-form-label"> Номер карты:</label>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" name="card_number" placeholder="Введите номер карты"/>
+            </div>
+        </div>
+        <div class="form-group my-3">
+            <label class="col-sm-3 col-form-label"> Сумма*:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="text" name="sum" placeholder="Введите сумму в рублях"/>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-1 col-form-label"> Сроки:</label>
+            <label class="col-sm-1 col-form-label"> Сроки*:</label>
             <div class="col-sm-6">
                 <input class="form-control" type="date" name="deadline"/>
             </div>

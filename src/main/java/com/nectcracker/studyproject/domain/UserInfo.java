@@ -4,11 +4,10 @@ package com.nectcracker.studyproject.domain;
 import lombok.Builder;
 import lombok.Data;
 
-
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.*;
 
 @Entity
 @Table
@@ -20,7 +19,7 @@ public class UserInfo implements Serializable {
     private String firstName;
     private String lastName;
     private String photo50;
-
+    private String photo100;
     @Temporal(TemporalType.DATE)
     private Date birthday;
 
@@ -29,10 +28,11 @@ public class UserInfo implements Serializable {
     private User user;
 
     @Builder(toBuilder = true)
-    public UserInfo(String firstName, String lastName, String photo50, Date birthday, User user) {
+    public UserInfo(String firstName, String lastName, String photo50, Date birthday, User user, String photo100) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.photo50 = photo50;
+        this.photo100 = photo100;
         this.birthday = birthday;
         this.user = user;
     }

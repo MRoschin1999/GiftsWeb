@@ -37,7 +37,6 @@
         setInterval(updateChatLog, 2500);
 
 
-
     </script>
     <link rel="stylesheet" type="text/css" href="./css/chatWindow.css"/>
     <link rel="stylesheet" type="text/css" href="./css/smallColumns.css"/>
@@ -72,17 +71,19 @@
     </div>
     <div style="position: relative;
                 height: 30vh;margin-bottom: 35px">
-        <div class="smallcolumns">
+        <div class="smallcolumns" style="width: 450px;">
             <div th:if="${ownerPage}">
                 <h5 class="font-italic m-3">Внести деньги</h5>
                 <form method="post" th:action="@{/donate/{id}(id=${wishId})}" class="m-3">
                     <input type="text" class="form-control" name="sum" placeholder="Сумма"/>
                     <div class="form-inline m-3">
                         <select name="participantId">
-                            <option th:each="i : ${participants}" th:value="${i.getId()}" th:text="${i.getUserForChat().getInfo().getFirstName()} + ' ' + ${i.getUserForChat().getInfo().getLastName()}">
+                            <option th:each="i : ${participants}" th:value="${i.getId()}"
+                                    th:text="${i.getUserForChat().getInfo().getFirstName()} + ' ' + ${i.getUserForChat().getInfo().getLastName()}">
                             </option>
                         </select>
-                        <button type="submit" class="btn btn-primary mx-3">Внести!</button>
+                        <button type="submit" class="btn btn-primary mx-3 d-inline">Добавить</button>
+                        <button type="submit" class="btn btn-primary mx-3d-inline ">Убавить</button>
                     </div>
                 </form>
             </div>
@@ -94,11 +95,13 @@
                 <span class="left">Цель: </span>
                 <span class="right">[[${chat.getPresentPrice()}]] руб.</span>
             </div>
+            <div style="margin-left: 20px">
             <progress style="width: 250px;" class="m-2" th:value="${chat.sumCurrentPrice()}"
                       th:max="${chat.getPresentPrice()}"></progress>
+            </div>
         </div>
-        <div class="smallcolumns">
-            <h5 class="m-3 font-italic">Описание: </h5>
+        <div class="smallcolumns" style="width: 300px">
+            <h5 th:if="${chat.getDescription()}" class="m-3 font-italic">Описание: </h5>
             <span th:text="${chat.getDescription()}"></span>
             <div th:if="${chat.wishForChat.eventForWish}">
                 <label class="h5 font-italic">К событию: </label>
@@ -107,41 +110,51 @@
             <label class="h5 font-italic">Дата окончания: </label>
             <span th:text="${chat.getDeadline()}"></span>
         </div>
-        <div class="smallcolumns" style="vertical-align: text-bottom">
-            <h5 class="font-italic m-3">Участники</h5>
-            <div th:fragment="group" class="m-3">
-                <div class="list-group list-group-flush my-3" style="width: 200px;">
-                    <div th:each="p : ${participants}">
-                        <label>[[${p.getUserForChat().getInfo().getFirstName()}]]
-                            [[${p.getUserForChat().getInfo().getLastName()}]]
-                            <div th:if="${ownerPage}">
-                                <label class="text-success">[[${p.getSumFromUser()}]] руб.</label>
-                            </div>
-                        </label>
+        <div style="display: inline-block;">
+            <div class="m-3">
+                <div style="display: inline-block;
+             width: 500px;
+             vertical-align: top;"
+                     class="holder">
+            <span style="display: block;"
+                  id="container-hold"></span>
+                </div>
+
+            </div>
+            <div>
+                <iframe name="mytarget" style="display: none;"></iframe>
+                <form th:action="@{/sendMessage/{id}(id=${wishId})}" class="form-inline m-3" method="post"
+                      target="mytarget">
+                    <input type="text" class="form-control" name="sentMessage" placeholder="Text"/>
+                    <button type="submit" class="btn btn-primary mx-3">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="width: 500px;  float: left; font-size: 14px; vertical-align: text-bottom;">
+        <h5 class="font-italic m-3">Участники</h5>
+        <div th:fragment="group" class="m-3">
+            <div class="list-group list-group-flush my-3">
+                <div th:each="p : ${participants}">
+                    <div>
+                        <div class="d-inline" style="width: 350px;">
+                            <label class="d-inline m-3" >[[${p.getUserForChat().getInfo().getFirstName()}]]
+                                [[${p.getUserForChat().getInfo().getLastName()}]]</label>
+                        </div>
+                        <div th:if="${ownerPage}" class="d-inline" >
+                            <label class="text-success d-inline"  >[[${p.getSumFromUser()}]] руб.</label>
+                            <form th:if="${p.getChat().getOwner().getId() != userId}" method="post" th:action="@{/leave/{id}(id=${wishId})}" class="d-inline">
+                                <button type="submit" class="btn btn-success mx-3">
+                                    [[${p.getNotConfirmedSumFromUser()}]]
+                                </button>
+                            </form>
+                            <form th:if="${p.getChat().getOwner().getId() == userId}" method="post" th:action="@{/leave/{id}(id=${wishId})}" class="d-inline" >
+                                <button type="submit" class="btn btn-danger mx-3">Отклонить</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-    </div>
-    <div style="display: inline-block">
-        <div class="m-3">
-            <div style="display: inline-block;
-             width: 500px;
-             vertical-align: top;"
-                 class="holder">
-            <span style="display: block;"
-                  id="container-hold"></span>
-            </div>
-
-        </div>
-        <div>
-            <iframe name="mytarget" style="display: none;"></iframe>
-            <form th:action="@{/sendMessage/{id}(id=${wishId})}" class="form-inline m-3" method="post"
-                  target="mytarget">
-                <input type="text" class="form-control" name="sentMessage" placeholder="Text"/>
-                <button type="submit" class="btn btn-primary mx-3">Отправить</button>
-            </form>
         </div>
     </div>
 </div>

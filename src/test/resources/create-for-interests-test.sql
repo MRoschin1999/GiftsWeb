@@ -19,6 +19,6 @@ insert into tbl_friends (friend_id, user_id) values
 (1, 2),
 (2, 1);
 
-insert into user_has_interest (user_id, interest_id) values
-(2, 11),
-(1, 7);
+-- insert into user_has_interest (user_id, interest_id) values
+-- (2, 11),
+-- (1, 7);

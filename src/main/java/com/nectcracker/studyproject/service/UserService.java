@@ -126,6 +126,7 @@ public class UserService implements UserDetailsService {
                     .firstName((String) userInfoMap.get("first_name"))
                     .lastName((String) userInfoMap.get("last_name"))
                     .photo50((String) userInfoMap.get("photo_50"))
+                    .photo100((String) userInfoMap.get("photo_100"))
                     .birthday(bDate)
                     .user(user).build();
             userInfoRepository.save(userInfo);
@@ -155,7 +156,7 @@ public class UserService implements UserDetailsService {
         Set<User> friendsSetRegistered = new HashSet<>();
         Set<Nickname> friendsNicknamesSetNotRegistered = new HashSet<>();
         if(user.getVkId() != null) {
-            final OAuthRequest friendsRequest = new OAuthRequest(Verb.GET, "https://api.vk.com/method/friends.get?user_id=" + user.getVkId() + "&fields=nickname,photo_50&v=" + VkontakteApi.VERSION);
+            final OAuthRequest friendsRequest = new OAuthRequest(Verb.GET, "https://api.vk.com/method/friends.get?user_id=" + user.getVkId() + "&fields=nickname,photo_50,photo_100&v=" + VkontakteApi.VERSION);
             vkScribejavaService.signRequest(accessToken, friendsRequest);
             final Response friendsResponse = vkScribejavaService.execute(friendsRequest);
 

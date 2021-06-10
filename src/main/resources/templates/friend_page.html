@@ -77,10 +77,24 @@
 <div th:insert="fragments/navbar :: header"></div>
 <div th:insert="fragments/listgroup :: group" style="display : inline-block; vertical-align: top;"></div>
 <div style="display : inline-block; vertical-align: top;">
-    <div class="font-weight-bold h4 m-3">
-        <span th:text="${info.firstName}"></span>
-        <span th:text="${info.lastName}"></span>
+    <div class="d-flex align-items-center m-3 border border-secondary"  style="width: 450px">
+        <div class="font-weight-bold h4 m-3 ">
+            <span th:text="${info.firstName + ' '+ info.lastName}"></span>
+        </div>
+        <div class="ml-auto">
+            <img th:src="${info.photo100}">
+        </div>
     </div>
+    <div class="m-3">
+        <form th:action="@{/removeFriend}" method="post" class="m-3">
+            <button type="submit" class="btn btn-primary mx-3">Удалить из друзей</button>
+        </form>
+    </div>
+    <!--    <div class="font-weight-bold h4 m-3">-->
+    <!--        <img th:src="${info.photo100}">-->
+    <!--        <span th:text="${info.firstName}"></span>-->
+    <!--        <span th:text="${info.lastName}"></span>-->
+    <!--    </div>-->
 
     <div class="font-italic m-3">Интересы пользователя:</div>
     <span class="m-3" th:if="${interests.isEmpty()}">Кажется у пользователя нет инетресов</span>
@@ -106,9 +120,11 @@
                 <form th:action="@{/new_wish_from_friend}" method="post">
                     <div>
                         <p>Название желания</p>
-                        <input type="text" class="form-control form-group" name="text" placeholder="Название"/>
-                        <input type="text" class="form-control form-group" name="imgURL" placeholder="Ссылка на изображение"/>
-                        <input type="text" class="form-control form-group" name="shopURL" placeholder="Ссылка на интернет-магазин"/>
+                        <input type="text" class="form-control form-group" name="text" placeholder="*Название"/>
+                        <input type="text" class="form-control form-group" name="imgURL"
+                               placeholder="Ссылка на изображение"/>
+                        <input type="text" class="form-control form-group" name="shopURL"
+                               placeholder="Ссылка на интернет-магазин"/>
                         <input type="hidden" name="name" th:value="${name}"/>
                         <button type="submit" class="btn btn-primary mx-3">Добавить</button>
                         <p>Событие к которому желание относится(не обязательно)</p>
@@ -133,7 +149,8 @@
                     <div class="card-body text-info">
                         <h5 class="card-title">
                             <p>Желание: [[${uw.wishName}]]</p>
-                            <p th:if="${!uw.getShopURL().isEmpty()}"><a th:href="${uw.getShopURL()}"><span>Ссылка на интернет магазин</span></a></p>
+                            <p th:if="${!uw.getShopURL().isEmpty()}"><a th:href="${uw.getShopURL()}"><span>Ссылка на интернет магазин</span></a>
+                            </p>
                             <p th:if="${uw.eventForWish}">Событие: [[${uw.eventForWish.title}]]</p>
                         </h5>
                         <div th:if="${uw.isClosed()}">
@@ -169,7 +186,8 @@
                     <div class="card-body text-info">
                         <h5 class="card-title">
                             <p>Желание: [[${fw.wishName}]]</p>
-                            <p th:if="${!fw.getShopURL().isEmpty()}"><a th:href="${fw.getShopURL()}"><span>Ссылка на интернет магазин</span></a></p>
+                            <p th:if="${!fw.getShopURL().isEmpty()}"><a th:href="${fw.getShopURL()}"><span>Ссылка на интернет магазин</span></a>
+                            </p>
                             <p th:if="${fw.eventForWish}">Событие: [[${fw.eventForWish.title}]]</p>
                         </h5>
                         <div class="card-text">

@@ -1,6 +1,7 @@
 package com.nectcracker.studyproject.config;
 
 import com.nectcracker.studyproject.service.CustomUserInfoTokenServices;
+import com.nectcracker.studyproject.service.InterestsService;
 import com.nectcracker.studyproject.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,18 +39,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthProvider authProvider;
 
     private final UserService userService;
+    private final InterestsService interestsService;
 
     private final DataSource dataSource;
 
     private final PasswordEncoder passwordEncoder;
 
-    public WebSecurityConfig(UserService userService, DataSource dataSource, @Qualifier("oauth2ClientContext") OAuth2ClientContext oAuth2ClientContext, AuthProvider authProvider, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserService userService, DataSource dataSource, @Qualifier("oauth2ClientContext") OAuth2ClientContext oAuth2ClientContext, AuthProvider authProvider, PasswordEncoder passwordEncoder, InterestsService interestsService) {
         this.userService = userService;
         this.dataSource = dataSource;
         this.oAuth2ClientContext = oAuth2ClientContext;
         this.authProvider = authProvider;
 
         this.passwordEncoder = passwordEncoder;
+        this.interestsService = interestsService;
     }
 
     @Override
@@ -123,6 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setRestTemplate(vkTemplate);
         vkFilter.setTokenServices(tokenServices);
         tokenServices.setUserService(userService);
+        tokenServices.setInterestService(interestsService);
         log.info("Token Service started", tokenServices);
         return vkFilter;
     }

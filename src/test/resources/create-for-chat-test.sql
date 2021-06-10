@@ -13,16 +13,16 @@ insert into user_info (id, first_name, last_name, user_id) values
 (1, 'A', 'A', 1),
 (2, 'B', 'B', 2);
 
-insert into user_wishes(id, wish_name, user_id, friend_create_wish) values
-(1, 'chocolate', 1, false),
-(2, 'book', 2, false);
+insert into user_wishes(id, wish_name, user_id, friend_create_wish, deleted, is_closed) values
+(1, 'chocolate', 1, false, false, false),
+(2, 'book', 2, false, false, false);
 
-insert into chat (current_price, description, present_price, wish_for_chat, user_id) values
-(0.1, 'AAA', 150, 1, 2);
+insert into chat (current_price, description, present_price, wish_for_chat, user_id, collected) values
+(0.1, 'AAA', 150, 1, 2, false);
 
-insert into participants (id, chat_for_participants, participants_for_chat, sum_from_user) values
-(1, 1, 2, 0.1);
+insert into participants (id, chat_for_participants, participants_for_chat, sum_from_user, not_confirmed_sum_from_user) values
+(1, 1, 2, 0.1, 0.0);
 
 insert into messages (id, text, user_id, wish_for_chat) values
-(1, 'first message', 2, 1),
+(3, 'first message', 2, 1),
 (2, 'second message', 2, 1);

@@ -1,5 +1,6 @@
 delete from user_has_interest;
 delete from participants;
+delete from chat_messages;
 delete from messages;
 delete from chat;
 delete from tbl_friends;

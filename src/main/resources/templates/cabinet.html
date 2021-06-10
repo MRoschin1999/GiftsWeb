@@ -138,7 +138,7 @@
             border-radius: 6px;
             box-shadow: 0 3px 6px #C3C3C3;
             position: absolute;
-            right: 150px;
+            right: 10%;
             top: 150px;
             padding: 0;
             color: black;
@@ -149,17 +149,23 @@
 <body>
 <div th:insert="fragments/navbar :: header"></div>
 <div th:insert="fragments/listgroup :: group" style="display : inline-block; vertical-align: top;"></div>
-<div style="display : inline-block; vertical-align: top;">
-    <div class="font-weight-bold h4 m-3">
-        <span th:text="${info.firstName}"></span>
-        <span th:text="${info.lastName}"></span>
+<div class="w-25" style="display : inline-block; vertical-align: top;">
+    <div class="d-flex align-items-center m-3 border border-secondary" style="width: 450px">
+        <div class="font-weight-bold h4 m-3 " >
+            <span th:text="${info.firstName + ' '+ info.lastName}"></span>
+        </div>
+        <div class="ml-auto">
+            <img th:src="${info.photo100}">
+        </div>
     </div>
-    <a href="/news"><span>Количество новостей: [[${newsNumber}]]</span></a>
+    <a href="/news" class="m-3"><span>Количество новостей: [[${newsNumber}]]</span></a>
 
     <div class="font-italic m-3">Мои интересы</div>
-    <form th:action="@{/setInterest}" method="post" class="m-3">
-        <button type="submit" class="btn btn-primary mx-3">Определить интерес по моей странице VK</button>
-    </form>
+    <div th:if="${fromVk}">
+        <form th:action="@{/setInterest}" method="post" class="m-3">
+            <button type="submit" class="btn btn-primary mx-3" >Определить интерес по VK</button>
+        </form>
+    </div>
     <div class="card-deck m-3">
         <div th:each="i : ${interests}">
             <div class="card bg-light mb-3" style="max-width: 18rem;">
@@ -179,15 +185,15 @@
                 <form th:action="@{/new_wish}" method="post" >
                     <div>
                         <p>Создание желания</p>
-                        <input type="text" class="form-control form-group" name="text" placeholder="Название"/>
+                        <input type="text" class="form-control form-group" name="text" placeholder="*Название"/>
                         <input type="text" class="form-control form-group" name="imgURL" placeholder="Ссылка на изображение"/>
                         <input type="text" class="form-control form-group" name="shopURL" placeholder="Ссылка на интернет-магазин"/>
-                        <button type="submit" class="btn btn-primary mx-3">Добавить</button>
-                        <p>Событие к которому желание относится(не обязательно)</p>
                         <p><select name="eventsId">
                             <option></option>
                             <option th:each="event : ${currentUserActualEvents}" th:value="${event.id}">[[${event.title}]]</option>
                         </select></p>
+                        <button type="submit" class="btn btn-primary mx-3">Добавить</button>
+<!--                        <p>Событие к которому желание относится(не обязательно)</p>-->
                     </div>
                 </form>
             </div>
@@ -198,7 +204,7 @@
     <div th:each="w : ${wishes}">
         <div th:if="!${w.isDeleted()}">
             <div th:if="!${w.friendCreateWish}" class="card-deck">
-                <div class="card border-info mb-3" style="max-width: 18rem;">
+                <div class="card border-info mb-3" style="max-width: 18rem; margin-left: 30px">
                     <div th::if="${w.getImgURL()}">
                         <img class="card-img-top" th:attr="src=${w.getImgURL()},title=${w.getImgURL()},alt=${w.getImgURL()}" >
                     </div>
@@ -215,7 +221,7 @@
         </div>
     </div>
 </div>
-    <div id="calendar"></div>
-    <div th:insert="fragments/settings :: settings"></div>
+<div id="calendar"></div>
+<div th:insert="fragments/settings :: settings"></div>
 </body>
 </html>

@@ -36,7 +36,7 @@ public class ChatServiceTest {
     @Ignore
     @WithUserDetails("a")
     public void testIfNewChatWasCreated() throws Exception {
-        chatService.createNewChat(2L, "BBB", "11-11-1111", "111");
+        chatService.createNewChat(2L, "BBB", "11-11-1111","11-11-1111", "111");
         User user = userRepository.findByUsername("a");
         Chat chat = chatRepository.findByOwner(user);
         assertThat(user.getChatsOwner().size(), is(1));

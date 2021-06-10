@@ -44,7 +44,7 @@
     <button type="submit" class="btn btn-primary m-3">Искать</button>
   </form>
   <div th:if="${founded}">
-    <h1>найденные люди</h1>
+    <h1 class="m-3">Найденные люди</h1>
     <span th:text="${message}"></span>
     <div th:each="friend : ${foundedUsers}">
       <div th:if="${friend.value}">

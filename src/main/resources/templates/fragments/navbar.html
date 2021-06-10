@@ -1,22 +1,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-light bg-success">
-        <a class="navbar-brand" href="/cabinet"><span class="mb-0 h1">GiftsWeb!</span></a>
+<div th:fragment="header" class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <a class="navbar-brand text-white" href="/cabinet"><span class="mb-0 h1">GiftsWeb!</span></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-collapse collapse" >
-                <div th:if="${#httpServletRequest.getSession().getAttribute('photo')}!=null">
-                    <img th:src="${#httpServletRequest.getSession().getAttribute('photo')}" alt="avatar"/>
-                </div>
-                <span class="navbar-text mx-3">
+        <div class="navbar-collapse collapse d-flex" >
+<!--                <div th:if="${#httpServletRequest.getSession().getAttribute('photo')}!=null">-->
+<!--                    <img th:src="${#httpServletRequest.getSession().getAttribute('photo')}" alt="avatar"/>-->
+<!--                </div>-->
+                <span class="navbar-text mx-3 text-white">
                             [[${#httpServletRequest.getSession().getAttribute("name")}]]
                 </span>
-            <form th:if="${#httpServletRequest.getSession().getAttribute('name')}!=null" th:action="@{/logout}" method="post">
-                <button class="btn btn-primary" type="submit">Выйти</button>
-            </form>
+            <div class="ml-auto" style="padding-right: 10%">
+                <form th:if="${#httpServletRequest.getSession().getAttribute('name')}!=null" th:action="@{/logout}" method="post">
+                    <button class="btn btn-primary" type="submit">Выйти</button>
+                </form>
+            </div>
         </div>
     </nav>
 </div>

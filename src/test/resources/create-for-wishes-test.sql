@@ -9,8 +9,8 @@ insert into users (id, confirmed, email, password, username) values
 insert into user_info (id, first_name, last_name, user_id) values
 (1, 'A', 'A', 1);
 
-insert into user_wishes(id, wish_name, user_id, friend_create_wish) values
-(1, 'chocolate', 1, false),
-(2, 'phone', 1, false ),
-(3, 'guitar', 1, true ),
-(4, 'pencil', 2, false);
+insert into user_wishes(id, wish_name, user_id, friend_create_wish, deleted, is_closed, shopurl) values
+(1, 'chocolate', 1, false, false, false, ''),
+(2, 'phone', 1, false, false, false, '' ),
+(3, 'guitar', 1, true, false, false, '' ),
+(4, 'pencil', 2, false, false, false, '');

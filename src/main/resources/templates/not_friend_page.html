@@ -18,10 +18,19 @@
 <div th:insert="fragments/navbar :: header"></div>
 <div th:insert="fragments/listgroup :: group" style="display : inline-block; vertical-align: top;"></div>
 <div style="display : inline-block; vertical-align: top;">
-  <div class="font-weight-bold h4 m-3">
-    <span th:text="${info.firstName}"></span>
-    <span th:text="${info.lastName}"></span>
+  <div class="d-flex align-items-center m-3 border border-secondary">
+    <div class="font-weight-bold h4 m-3">
+      <span th:text="${info.firstName + ' '+ info.lastName}"></span>
+      <!--            <span th:text="${info.lastName}"></span>-->
+    </div>
+    <div class="ml-auto">
+      <img th:src="${info.photo100}">
+    </div>
   </div>
+<!--  <div class="font-weight-bold h4 m-3">-->
+<!--    <span th:text="${info.firstName}"></span>-->
+<!--    <span th:text="${info.lastName}"></span>-->
+<!--  </div>-->
 
   <div class="font-italic m-3">Интересы пользователя:</div>
   <span class="m-3" th:if="${interests.isEmpty()}">Кажется у пользователя нет инетресов</span>

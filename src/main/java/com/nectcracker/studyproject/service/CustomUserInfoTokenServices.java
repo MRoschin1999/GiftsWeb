@@ -1,27 +1,12 @@
 package com.nectcracker.studyproject.service;
 
 import com.github.scribejava.apis.VkontakteApi;
-import com.github.scribejava.core.builder.ServiceBuilder;
-import com.github.scribejava.core.oauth.OAuth20Service;
-import com.nectcracker.studyproject.domain.Role;
-import com.nectcracker.studyproject.domain.User;
-import com.nectcracker.studyproject.domain.UserInfo;
-import com.nectcracker.studyproject.repos.UserInfoRepository;
-import com.nectcracker.studyproject.repos.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.*;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedAuthoritiesExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedPrincipalExtractor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,10 +20,12 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.util.Assert;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * {@link ResourceServerTokenServices} that uses a user info REST service.
@@ -50,6 +37,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
 
 
     private UserService userService;
+    private InterestsService interestsService;
 
     protected final Log logger = LogFactory.getLog(getClass());
 
@@ -92,6 +80,10 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
         this.userService = userService;
     }
 
+    public void setInterestService(InterestsService interestsService){
+        this.interestsService = interestsService;
+    }
+
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
         Map<String, Object> map = getMap(this.userInfoEndpointUrl, accessToken);
@@ -106,6 +98,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
         if(map.containsKey("response")){
             userInfoMap = (Map<String, Object>) ((List) map.get("response")).get(0);
             userService.setAccessToken(accessToken);
+            interestsService.setAccessToken(accessToken);
             try {
                 userService.addUserFromVk(userInfoMap);
             } catch (InterruptedException e) {

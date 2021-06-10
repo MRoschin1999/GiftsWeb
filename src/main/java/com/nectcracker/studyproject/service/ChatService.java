@@ -39,7 +39,7 @@ public class ChatService {
         this.participantsRepository = participantsRepository;
     }
 
-    public boolean createNewChat(Long id, String description, String deadline, String sum) {
+    public boolean createNewChat(Long id, String description, String cardNumber, String deadline, String sum) {
         try {
             UserWishes wishForChat = userWishesService.getById(id);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -181,6 +181,6 @@ public class ChatService {
     public Boolean isMoneyCollected(Long wishId) {
         UserWishes wish = userWishesService.getById(wishId);
         Chat currentChat = chatRepository.findByWishForChat(wish);
-        return wish.getCurrentSum() > currentChat.getPresentPrice();
+        return wish.getCurrentSum() >= currentChat.getPresentPrice();
     }
 }

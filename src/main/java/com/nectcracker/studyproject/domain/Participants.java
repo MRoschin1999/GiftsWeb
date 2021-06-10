@@ -23,6 +23,7 @@ public class Participants {
     private User userForChat;
 
     private double sumFromUser;
+    private double notConfirmedSumFromUser;
 
     public Participants(User userForChat, Chat chat) {
         this.userForChat = userForChat;
@@ -32,6 +33,13 @@ public class Participants {
 
     public void updateSumFromUser(double sum) {
         sumFromUser += sum;
+    }
+    public void downgradeSumFromUser(double sum) {
+        sumFromUser -= sum;
+    }
+
+    public void updateNotConfirmedSumFromUser(double sum) {
+        notConfirmedSumFromUser += sum;
     }
 
     public Participants() {

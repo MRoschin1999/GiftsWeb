@@ -161,6 +161,7 @@ public class FriendsController {
         userService.acceptFriendRequest(user, futureFriend);
 
         cache.refresh(user);
+        cache.refresh(futureFriend);
         return "redirect:/friends";
     }
 }
